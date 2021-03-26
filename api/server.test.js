@@ -1,6 +1,7 @@
 const server = require('./server');
 const request = require('supertest');
 const db = require('../data/dbConfig');
+const bcrypt = require('bcryptjs');
 
 // Write your tests here
 test('sanity', () => {
@@ -42,6 +43,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await db('users').truncate();
+  await db.seed.run();
 });
 
 afterAll(async () => {
@@ -56,9 +58,8 @@ describe('[POST] /api/auth/register', () => {
     expect(res.status).toBe(200)
   });
 
-  it('responds with new user with bcrypted passowrd on success', async () => {
-    const res = await request(server).post('api/auth/register')
-    .send(newUser)
-    expect(res.body).toEqual()
+  it('seeded bcrypt password sanity check', async () => {
+    const check = await db('users').where('username', existingUser.username).first()
+    expect(bcrypt.compareSync(existingUser.password, check.password)).toBeTruthy();
   })
 });
