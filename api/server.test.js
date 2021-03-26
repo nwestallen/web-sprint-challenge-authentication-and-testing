@@ -122,7 +122,7 @@ describe('[POST] /api/auth/login', () => {
     .send(existingUser);
     expect(res.body.message).toBe('welcome, OldUser')
     expect(res.body).toHaveProperty('token');
-  })
+  });
 
   it('responds with status code 400 if username or password missing', async () => {
     const res1 = await request(server).post('/api/auth/login')
