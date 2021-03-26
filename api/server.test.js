@@ -2,6 +2,7 @@ const server = require('./server');
 const request = require('supertest');
 const db = require('../data/dbConfig');
 const bcrypt = require('bcryptjs');
+const jokes = require('./jokes/jokes-data');
 
 // Write your tests here
 test('sanity', () => {
@@ -167,3 +168,35 @@ describe('[POST] /api/auth/login', () => {
   });
 
 });
+
+describe('[GET] /api/jokes', () => {
+  
+  it('responds with a 401 status code on missing token', async () => {
+    const res = await request(server).get('/api/jokes')
+    expect(res.status).toBe(401);
+  });
+
+  it('responds with "token required" message on missing token', async () => {
+    const res = await request(server).get('/api/jokes')
+    expect(res.body.message).toBe('token required');
+  });
+
+  it('responds with a 401 status code on invalid token', async () => {
+    const res = await request(server).get('/api/jokes')
+    .set('Authorization', 'fakeToken')
+    expect(res.status).toBe(401);
+  });
+
+  it('responds with an "invalid token" message on invalid token', async () => {
+    const res = await request(server).get('/api/jokes')
+    .set('Authorization', 'fakeToken')
+    expect(res.body.message).toBe('invalid token');
+  });
+
+  it('responds with jokes data on valid token', async () => {
+    const login = await request(server).post('/api/auth/login').send(existingUser)
+    const res = await request(server).get('/api/jokes').set('Authorization', login.body.token)
+    expect(res.body).toEqual(jokes);
+  });
+
+})
