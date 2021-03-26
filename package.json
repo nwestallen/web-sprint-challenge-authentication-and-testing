@@ -6,6 +6,7 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
     "test": "cross-env NODE_ENV=testing jest --watchAll --verbose --runInBand"
   },
   "repository": {
@@ -14,6 +15,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
