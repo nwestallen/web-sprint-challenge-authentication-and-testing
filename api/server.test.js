@@ -52,14 +52,30 @@ afterAll(async () => {
 
 describe('[POST] /api/auth/register', () => {
 
-  it('responds with a status code of 200 on success', async () => {
+  it('responds with a status code of 201 on success', async () => {
     const res = await request(server).post('/api/auth/register')
     .send(newUser);
     expect(res.status).toBe(200)
   });
 
   it('seeded bcrypt password sanity check', async () => {
-    const check = await db('users').where('username', existingUser.username).first()
+    const check = await db('users').where('username', existingUser.username).first();
     expect(bcrypt.compareSync(existingUser.password, check.password)).toBeTruthy();
-  })
+  });
+
+  it('adds new user with bcrypted password to users table on success', async () => {
+    await request(server).post('/api/auth/register')
+    .send(newUser);
+    const check = await db('users').where('username', newUser.username).first();
+    expect(check.username).toBe('ChuckTesta');
+    expect(bcrypt.compareSync(newUser.password, check.password)).toBeTruthy();
+  });
+
+  it('responds with new user with bcrypted password on success', async () => {
+    const res = await request(server).post('/api/auth/register')
+    .send(newUser);
+    expect(res.body.username).toBe('ChuckTesta')
+    expect(bcrypt.compareSync(newUser.password, res.body.password)).toBeTruthy();
+  });
+
 });
