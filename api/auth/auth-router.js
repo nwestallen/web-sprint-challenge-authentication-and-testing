@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const User = require('../users/users-model');
 const bcrypt = require('bcryptjs');
-const { checkUserPayload } = require('../middleware/users-middleware');
+const { checkUserPayload, checkUsernameAvailability } = require('../middleware/users-middleware');
 
-router.post('/register', checkUserPayload, (req, res, next) => {
+router.post('/register', checkUserPayload, checkUsernameAvailability, (req, res) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.

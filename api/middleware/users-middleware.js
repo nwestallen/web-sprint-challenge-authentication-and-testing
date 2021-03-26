@@ -10,7 +10,15 @@ const checkUserPayload = (req, res, next) => {
 };
 
 const checkUsernameAvailability = (req, res, next) => {
-    next();
+    User.getByUsername(req.body.username)
+    .then(user => {
+        if (user) {
+            res.status(400).json({ message: "username taken" });
+        } else {
+            next();
+        }
+    })
+    .catch(err => next(err));
 };
 
 module.exports = {
