@@ -9,31 +9,6 @@ test('sanity', () => {
   expect(true).toBe(true);
 });
 
-// Tests
-
-// - POST /api/auth/register responds with the new user with a bcrypted password on success
-// - POST /api/auth/register adds a new user with a bcrypted password to the users table on success
-// - POST /api/auth/register responds with a proper status code on success
-// - POST /api/auth/register responds with an error status code if username exists in user table
-// - POST /api/auth/register responds with "username taken" message if username exists in users table
-// - POST /api/auth/register responds with an error status code if username or password are not sent
-// - POST /api/auth/register responds with "username and password required" message if either is not sent
-
-// - POST /api/auth/login responds with a proper status code on successful login
-// - POST /api/auth/login responds with a welcome message and a token on successful login
-// - POST /api/auth/login responds with an error status code if username or password not sent
-// - POST /api/auth/login responds with "username and password required" message if either is not sent
-// - POST /api/auth/login responds with a proper status code on non-existing username
-// - POST /api/auth/login responds with "invalid credentials" message on non-existing username
-// - POST /api/auth/login responds with a proper status code on invalid password
-// - POST /api/auth/login responds with "invalid credentials" message on invalid password
-
-// - GET /api/jokes/ responds with an error status code on missing token
-// - GET /api/jokes/ responds with a "token required" message on missing token
-// - GET /api/jokes/ responds with an error status code on invalid token
-// - GET /api/jokes/ responds with a "token invalid" message on invalid token
-// - GET /api/jokes/ responds with the jokes on valid token
-
 const newUser = {username: 'ChuckTesta', password: '1234'}
 const existingUser = {username: 'OldUser', password: 'password'}
 
@@ -190,7 +165,7 @@ describe('[GET] /api/jokes', () => {
   it('responds with an "invalid token" message on invalid token', async () => {
     const res = await request(server).get('/api/jokes')
     .set('Authorization', 'fakeToken')
-    expect(res.body.message).toBe('invalid token');
+    expect(res.body.message).toBe('token invalid');
   });
 
   it('responds with jokes data on valid token', async () => {
