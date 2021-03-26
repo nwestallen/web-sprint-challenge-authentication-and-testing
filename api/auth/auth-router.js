@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../users/users-model');
+const bcrypt = require('bcryptjs');
 
 router.post('/register', (req, res) => {
   /*
@@ -27,8 +28,10 @@ router.post('/register', (req, res) => {
     4- On FAILED registration due to the `username` being taken,
       the response body should include a string exactly as follows: "username taken".
   */
-  const { username, password } = req.body
-  User.add({username: username, password: password})
+  const { username, password } = req.body;
+  const hash = bcrypt.hashSync(password, 8);
+
+  User.add({username: username, password: hash})
   .then(user => {
     res.status(201).json(user);
   })
