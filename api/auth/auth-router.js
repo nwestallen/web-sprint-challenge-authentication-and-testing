@@ -2,6 +2,8 @@ const router = require('express').Router();
 const User = require('../users/users-model');
 const bcrypt = require('bcryptjs');
 const { checkUserPayload, checkUsernameAvailability } = require('../middleware/users-middleware');
+const { JWT_SECRET } = require('../secrets');
+const jwt = require('jsonwebtoken');
 
 router.post('/register', checkUserPayload, checkUsernameAvailability, (req, res) => {
   /*
@@ -41,8 +43,7 @@ router.post('/register', checkUserPayload, checkUsernameAvailability, (req, res)
   });
 });
 
-router.post('/login', (req, res) => {
-  res.end('implement login, please!');
+router.post('/login', checkUserPayload, (req, res) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -66,6 +67,8 @@ router.post('/login', (req, res) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
+  const { username, password } = req.body;
+  res.json({ message: 'not right'});
 });
 
 module.exports = router;
