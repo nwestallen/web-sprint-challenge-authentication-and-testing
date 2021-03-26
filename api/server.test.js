@@ -55,7 +55,7 @@ describe('[POST] /api/auth/register', () => {
   it('responds with a status code of 201 on success', async () => {
     const res = await request(server).post('/api/auth/register')
     .send(newUser);
-    expect(res.status).toBe(200)
+    expect(res.status).toBe(201)
   });
 
   it('seeded bcrypt password sanity check', async () => {

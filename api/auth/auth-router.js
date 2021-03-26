@@ -1,7 +1,7 @@
 const router = require('express').Router();
+const User = require('../users/users-model');
 
 router.post('/register', (req, res) => {
-  res.status(500).json({message: 'break test'})
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -27,6 +27,14 @@ router.post('/register', (req, res) => {
     4- On FAILED registration due to the `username` being taken,
       the response body should include a string exactly as follows: "username taken".
   */
+  const { username, password } = req.body
+  User.add({username: username, password: password})
+  .then(user => {
+    res.status(201).json(user);
+  })
+  .catch(err => {
+    res.status(500).json({ message: err.message, stack: err.stack  });
+  });
 });
 
 router.post('/login', (req, res) => {
