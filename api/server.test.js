@@ -78,4 +78,34 @@ describe('[POST] /api/auth/register', () => {
     expect(bcrypt.compareSync(newUser.password, res.body.password)).toBeTruthy();
   });
 
+  it('responds with status code 400 if username is taken', async () => {
+    const res = await request(server).post('/api/auth/register')
+    .send(existingUser);
+    expect(res.status).toBe(400);
+  });
+
+  it('responds with "username taken" message if username is taken', async () => {
+    const res = await request(server).post('/api/auth/register')
+    .send(existingUser);
+    expect(res.body.message).toBe('username taken');
+  });
+
+  it('responds with status code 400 if username or password is missing', async () => {
+    const res1 = await request(server).post('/api/auth/register')
+    .send({username: 'NoPassword'});
+    expect(res1.status).toBe(400);
+    const res2 = await request(server).post('/api/auth/register')
+    .send({password: 'NoUser'});
+    expect(res2.status).toBe(400);
+  });
+
+  it('responds with "username and password required" if either is missing', async () => {
+    const res1 = await request(server).post('/api/auth/register')
+    .send({username: 'NoPassword'});
+    expect(res1.body.message).toBe('username and password required');
+    const res2 = await request(server).post('api/auth/register')
+    .send({password: 'NoUser'});
+    expect(res2.body.message).toBe('username and password required');
+  });
+  
 });
