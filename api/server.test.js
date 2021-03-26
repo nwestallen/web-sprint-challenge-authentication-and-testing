@@ -108,3 +108,62 @@ describe('[POST] /api/auth/register', () => {
     expect(res.body.message).toBe('username taken');
   });
 });
+
+describe('[POST] /api/auth/login', () => {
+
+  it('responds with status code 200 on successful login', async () => {
+    const res = await request.server.post('/api/auth/login')
+    .send(existingUser);
+    expect(res.status).toBe(200);
+  });
+
+  it('responds with welcome message and token on success', async () => {
+    const res = await request.server.post('/api/auth/login')
+    .send(existingUser);
+    expect(res.body.message).toBe('welcome, OldUser')
+    expect(res.body).toHaveProperty('token');
+  })
+
+  it('responds with status code 400 if username or password missing', async () => {
+    const res1 = await request.server.post('/api/auth/login')
+    .send({username: 'NoPassword'});
+    expect(res1.status).toBe(400);
+    const res2 = await request.server.post('/api/auth/login')
+    .send({password: 'NoUser'});
+    expect(res2.status).toBe(400);
+  });
+
+  it('responds with "username and password required" if either is missing', async () => {
+    const res1 = await request.server.post('/api/auth/login')
+    .send({username: 'NoPassword'});
+    expect(res1.body.message).toBe('username and password required');
+    const res2 = await request.server.post('/api/auth/login')
+    .send({password: 'NoUser'});
+    expect(res2.body.message).toBe('username and password required');
+  });
+
+  it('responds with status code 401 if username does not exist', async () => {
+    const res = await request(server).post('/api/auth/login')
+    .send(newUser);
+    expect(res.status).toBe(401);
+  });
+
+  it('responds with "invalid credentials" if username does not exist', async () => {
+    const res = await request(server).post('/api/auth/login')
+    .send(newUser);
+    expect(res.body.message).toBe('invalid credentials');
+  });
+
+  it('responds with status code 401 on bad password', async () => {
+    const res = await request(server).post('/api/auth/login')
+    .send({username: 'OldUser', password: 'wrong'});
+    expect(res.status).toBe(401);
+  });
+
+  it('responds with "invalid credentials" on bad password', async () => {
+    const res = await request(server).post('/api/auth/login')
+    .send({username: 'OldUser', password: 'wrong'});
+    expect(res.body.message).toBe('invalid credentials');
+  });
+
+});
